@@ -5,7 +5,6 @@ import 'package:duolingo_app/app/screens/account/register_screen.dart';
 import 'package:duolingo_app/app/screens/welcome/welcome_screen.dart';
 
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -25,8 +24,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const WelcomeScreen(),
-        '/registrate': (context) => const RegisterScreen(),
-        '/iniciar': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/login': (context) => const LoginScreen(),
         '/home': (context) => const HomeScreen(),
       },
     );

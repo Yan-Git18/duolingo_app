@@ -7,82 +7,272 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+class Leccion {
+  String titulo;
+  IconData icono;
+  bool completada;
+  
+  Leccion(this.titulo, this.icono, {this.completada = false});
+}
+
+class Unidad {
+  String nombre;
+  String descripcion;
+  List<Leccion> lecciones;
+  Color colorPrimario;
+  Color colorSecundario;
+  IconData icono;
+  
+  Unidad(this.nombre, this.descripcion, this.lecciones, this.colorPrimario, this.colorSecundario, this.icono);
+}
+
 class _HomeScreenState extends State<HomeScreen> {
-  List<Unidad> unidades = [
-    Unidad("Unidad 1", [
-      Leccion("Lección 1: Saludos"),
-      Leccion("Lección 2: Presentaciones"),
-      Leccion("Lección 3: Colores"),
-    ]),
-    Unidad("Unidad 2", [
-      Leccion("Lección 1: Animales"),
-      Leccion("Lección 2: Comida"),
-    ]),
-    Unidad("Unidad 3", [
-      Leccion("Lección 1: Verbos básicos"),
-      Leccion("Lección 2: Familia"),
-      Leccion("Lección 3: Números"),
-      Leccion("Lección 4: Objetos"),
-    ]),
+
+  List<Unidad> get unidades => [
+    Unidad(
+      "Unidad 1: Fundamentos", 
+      "Aprende los conceptos básicos del idioma",
+      [
+        Leccion("Lección 1: Saludos", Icons.waving_hand, completada: true),
+        Leccion("Lección 2: Presentación", Icons.person_outline, completada: true),
+        Leccion("Lección 3: Colores", Icons.palette),
+      ],
+      const Color(0xFF58CC02),
+      const Color(0xFFE8F5E8),
+      Icons.play_circle_outline,
+    ),
+    Unidad(
+      "Unidad 2: Vida Cotidiana",
+      "Vocabulario para el día a día",
+      [
+        Leccion("Lección 1: Animales", Icons.pets),
+        Leccion("Lección 2: Comida", Icons.restaurant),
+      ],
+      const Color(0xFF1CB0F6),
+      const Color(0xFFE3F2FD),
+      Icons.home_outlined,
+    ),
+    Unidad(
+      "Unidad 3: Comunicación",
+      "Expresiones y conceptos avanzados",
+      [
+        Leccion("Lección 1: Verbos básicos", Icons.flash_on),
+        Leccion("Lección 2: Familia", Icons.family_restroom),
+        Leccion("Lección 3: Números", Icons.numbers),
+        Leccion("Lección 4: Objetos", Icons.category),
+      ],
+      const Color(0xFFFF9600),
+      const Color(0xFFFFF3E0),
+      Icons.chat_bubble_outline,
+    ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
       appBar: AppBar(
-        title: Text("Mis Unidades"),
-        backgroundColor: const Color(0xFF58CC02), // Verde Duolingo
+        title: const Text(
+          "Mis Unidades",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        backgroundColor: const Color(0xFF58CC02),
+        foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
       ),
       body: ListView.builder(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         itemCount: unidades.length,
         itemBuilder: (context, index) {
           final unidad = unidades[index];
-          return Card(
-            color: const Color.fromARGB(255, 232, 245, 255),
-            margin: EdgeInsets.symmetric(vertical: 6),
-            child: ExpansionTile(
-              title: Text(
-                unidad.nombre,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF58CC02), // Verde Duolingo
+          final progreso = unidad.lecciones.where((l) => l.completada).length / unidad.lecciones.length;
+          
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
+              ],
+            ),
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              children: unidad.lecciones.map((leccion) {
-                return Align(
-                  alignment:
-                      Alignment.centerLeft, // 👈 Pega todo a la izquierda
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      unidad.colorSecundario,
+                      unidad.colorSecundario.withOpacity(0.7),
+                    ],
+                  ),
+                ),
+                child: ExpansionTile(
+                  tilePadding: const EdgeInsets.all(20),
+                  childrenPadding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    bottom: 16,
+                  ),
+                  leading: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: unidad.colorPrimario.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
-                      leccion.titulo,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 1, 30, 16), // Texto negro
-                      ),
+                    child: Icon(
+                      unidad.icono,
+                      color: unidad.colorPrimario,
+                      size: 28,
                     ),
                   ),
-                );
-              }).toList(),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        unidad.nombre,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: unidad.colorPrimario,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        unidad.descripcion,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      // Barra de progreso
+                      Container(
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: FractionallySizedBox(
+                          widthFactor: progreso,
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: unidad.colorPrimario,
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${(progreso * 100).round()}% completado",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                  iconColor: unidad.colorPrimario,
+                  collapsedIconColor: unidad.colorPrimario,
+                  children: unidad.lecciones.asMap().entries.map((entry) {
+                    final leccion = entry.value;
+                    final esUltima = entry.key == unidad.lecciones.length - 1;
+                    
+                    return Container(
+                      margin: EdgeInsets.only(bottom: esUltima ? 0 : 12),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: leccion.completada 
+                            ? unidad.colorPrimario.withOpacity(0.3)
+                            : Colors.grey[300]!,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: leccion.completada 
+                                ? unidad.colorPrimario.withOpacity(0.1)
+                                : Colors.grey[100],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              leccion.icono,
+                              color: leccion.completada 
+                                ? unidad.colorPrimario
+                                : Colors.grey[400],
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              leccion.titulo,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: leccion.completada 
+                                  ? unidad.colorPrimario
+                                  : Colors.grey[700],
+                              ),
+                            ),
+                          ),
+                          if (leccion.completada)
+                            Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                color: unidad.colorPrimario,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            )
+                          else
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey[300]!,
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           );
         },
       ),
     );
   }
-}
-
-class Leccion {
-  String titulo;
-  Leccion(this.titulo);
-}
-
-class Unidad {
-  String nombre;
-  List<Leccion> lecciones;
-  Unidad(this.nombre, this.lecciones);
 }

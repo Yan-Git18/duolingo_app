@@ -9,8 +9,7 @@ class WelcomeScreen extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            
+          children: [            
             const SizedBox(height: 150),
             Image.asset(
               'images/duo.png',
@@ -47,7 +46,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/registrate');
+                Navigator.pushNamed(context, '/register');
               },
               child: const Text(
                 "REGÍSTRATE",
@@ -67,7 +66,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-                Navigator.pushNamed(context, '/iniciar');
+                Navigator.pushNamed(context, '/login');
               },
               child: const Text(
                 "INICIAR SESIÓN",
