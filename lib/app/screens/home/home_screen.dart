@@ -1,3 +1,6 @@
+import 'package:duolingo_app/app/models/leccion.dart';
+import 'package:duolingo_app/app/models/unidad.dart';
+import 'package:duolingo_app/app/services/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -7,34 +10,18 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class Leccion {
-  String titulo;
-  IconData icono;
-  bool completada;
-  
-  Leccion(this.titulo, this.icono, {this.completada = false});
-}
-
-class Unidad {
-  String nombre;
-  String descripcion;
-  List<Leccion> lecciones;
-  Color colorPrimario;
-  Color colorSecundario;
-  IconData icono;
-  
-  Unidad(this.nombre, this.descripcion, this.lecciones, this.colorPrimario, this.colorSecundario, this.icono);
-}
-
 class _HomeScreenState extends State<HomeScreen> {
-
   List<Unidad> get unidades => [
     Unidad(
-      "Unidad 1: Fundamentos", 
+      "Unidad 1: Fundamentos",
       "Aprende los conceptos básicos del idioma",
       [
         Leccion("Lección 1: Saludos", Icons.waving_hand, completada: true),
-        Leccion("Lección 2: Presentación", Icons.person_outline, completada: true),
+        Leccion(
+          "Lección 2: Presentación",
+          Icons.person_outline,
+          completada: true,
+        ),
         Leccion("Lección 3: Colores", Icons.palette),
       ],
       const Color(0xFF58CC02),
@@ -74,23 +61,79 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text(
           "Mis Unidades",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
         ),
         backgroundColor: const Color(0xFF58CC02),
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
+        actions: [
+          // Botón de perfil/configuración
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'logout') {
+                final authService = AuthService();
+                final result = await authService.signOut();
+
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(result.message),
+                      backgroundColor: result.success
+                          ? const Color(0xFF58CC02)
+                          : Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.person, color: Color(0xFF58CC02)),
+                    SizedBox(width: 8),
+                    Text('Mi Perfil'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem<String>(
+                value: 'settings',
+                child: Row(
+                  children: [
+                    Icon(Icons.settings, color: Color(0xFF58CC02)),
+                    SizedBox(width: 8),
+                    Text('Configuración'),
+                  ],
+                ),
+              ),
+              const PopupMenuDivider(),
+              const PopupMenuItem<String>(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Cerrar Sesión', style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ),
+            ],
+            icon: const Icon(Icons.more_vert),
+          ),
+        ],
       ),
+
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: unidades.length,
         itemBuilder: (context, index) {
           final unidad = unidades[index];
-          final progreso = unidad.lecciones.where((l) => l.completada).length / unidad.lecciones.length;
-          
+          final progreso =
+              unidad.lecciones.where((l) => l.completada).length /
+              unidad.lecciones.length;
+
           return Container(
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
@@ -181,10 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 4),
                       Text(
                         "${(progreso * 100).round()}% completado",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                       ),
                     ],
                   ),
@@ -193,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: unidad.lecciones.asMap().entries.map((entry) {
                     final leccion = entry.value;
                     final esUltima = entry.key == unidad.lecciones.length - 1;
-                    
+
                     return Container(
                       margin: EdgeInsets.only(bottom: esUltima ? 0 : 12),
                       padding: const EdgeInsets.all(16),
@@ -201,9 +241,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: leccion.completada 
-                            ? unidad.colorPrimario.withOpacity(0.3)
-                            : Colors.grey[300]!,
+                          color: leccion.completada
+                              ? unidad.colorPrimario.withOpacity(0.3)
+                              : Colors.grey[300]!,
                           width: 1.5,
                         ),
                       ),
@@ -212,16 +252,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: leccion.completada 
-                                ? unidad.colorPrimario.withOpacity(0.1)
-                                : Colors.grey[100],
+                              color: leccion.completada
+                                  ? unidad.colorPrimario.withOpacity(0.1)
+                                  : Colors.grey[100],
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Icon(
                               leccion.icono,
-                              color: leccion.completada 
-                                ? unidad.colorPrimario
-                                : Colors.grey[400],
+                              color: leccion.completada
+                                  ? unidad.colorPrimario
+                                  : Colors.grey[400],
                               size: 20,
                             ),
                           ),
@@ -232,9 +272,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
-                                color: leccion.completada 
-                                  ? unidad.colorPrimario
-                                  : Colors.grey[700],
+                                color: leccion.completada
+                                    ? unidad.colorPrimario
+                                    : Colors.grey[700],
                               ),
                             ),
                           ),

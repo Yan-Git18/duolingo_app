@@ -1,3 +1,4 @@
+import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -18,18 +19,18 @@ class WelcomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             
             const Text(
-              "duolingo",
+              AppStrings.appName,
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF58CC02),
+                color: AppColors.primary,
               ),
             ),
 
             const SizedBox(height: 10),
 
             const Text(
-              "La forma divertida, efectiva y\n gratis de aprender idiomas!",
+              AppStrings.welcome,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.white70),
             ),
@@ -39,7 +40,7 @@ class WelcomeScreen extends StatelessWidget {
             // Botón de registrarse
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF58CC02),
+                backgroundColor: AppColors.primary,
                 minimumSize: const Size(330, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -59,7 +60,7 @@ class WelcomeScreen extends StatelessWidget {
             // Botón de iniciar sesión
             OutlinedButton(
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFF58CC02), width: 2),
+                side: const BorderSide(color: AppColors.primary, width: 2),
                 minimumSize: const Size(330, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
@@ -70,7 +71,7 @@ class WelcomeScreen extends StatelessWidget {
               },
               child: const Text(
                 "INICIAR SESIÓN",
-                style: TextStyle(fontSize: 18, color: Color(0xFF58CC02)),
+                style: TextStyle(fontSize: 18, color: AppColors.primary),
               ),
             ),
             const SizedBox(height: 40),
