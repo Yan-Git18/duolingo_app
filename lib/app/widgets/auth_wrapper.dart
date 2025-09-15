@@ -1,10 +1,11 @@
+import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/auth_service.dart';
 import '../screens/auth/welcome_screen.dart';
 import '../screens/home/home_screen.dart';
 
-/// Wrapper que maneja automáticamente la navegación basada en el estado de autenticación
+// Wrapper que maneja automáticamente la navegación basada en el estado de autenticación
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -18,16 +19,15 @@ class AuthWrapper extends StatelessWidget {
         // Mostrar loading mientras se verifica el estado
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            backgroundColor: Color(0xFF1C1E26),
+            backgroundColor: AppColors.background,
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Logo de Duolingo
                   Icon(
                     Icons.school,
                     size: 80,
-                    color: Color(0xFF58CC02),
+                    color: AppColors.primary,
                   ),
                   SizedBox(height: 20),
                   Text(
@@ -35,12 +35,12 @@ class AuthWrapper extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF58CC02),
+                      color: AppColors.primary,
                     ),
                   ),
                   SizedBox(height: 30),
                   CircularProgressIndicator(
-                    color: Color(0xFF58CC02),
+                    color: AppColors.primary,
                   ),
                 ],
               ),
@@ -51,7 +51,7 @@ class AuthWrapper extends StatelessWidget {
         // Si hay error en la conexión
         if (snapshot.hasError) {
           return Scaffold(
-            backgroundColor: const Color(0xFF1C1E26),
+            backgroundColor: AppColors.background,
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -66,7 +66,7 @@ class AuthWrapper extends StatelessWidget {
                     "Error de conexión",
                     style: const TextStyle(
                       fontSize: 20,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -86,12 +86,12 @@ class AuthWrapper extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF58CC02),
+                      backgroundColor: AppColors.primary,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                     ),
                     child: const Text(
                       "Reintentar",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: AppColors.white),
                     ),
                   ),
                 ],
@@ -103,11 +103,10 @@ class AuthWrapper extends StatelessWidget {
         // Decidir qué pantalla mostrar basado en el estado de autenticación
         final User? user = snapshot.data;
 
-        if (user != null) {
-          // Usuario autenticado -> Ir al Home
+        if (user != null) {          
           return const HomeScreen();
-        } else {
-          // Usuario NO autenticado -> Ir a Welcome
+
+        } else {          
           return const WelcomeScreen();
         }
       },
@@ -115,6 +114,7 @@ class AuthWrapper extends StatelessWidget {
   }
 }
 
+/*
 /// Versión alternativa con verificación adicional de datos de usuario
 class AuthWrapperWithUserData extends StatelessWidget {
   const AuthWrapperWithUserData({super.key});
@@ -133,7 +133,7 @@ class AuthWrapperWithUserData extends StatelessWidget {
 
         // Error state
         if (snapshot.hasError) {
-          return _buildErrorScreen();
+          //return _buildErrorScreen();
         }
 
         final User? user = snapshot.data;
@@ -198,6 +198,7 @@ class AuthWrapperWithUserData extends StatelessWidget {
     );
   }
 
+  /*
   Widget _buildErrorScreen() {
     return Scaffold(
       backgroundColor: const Color(0xFF1C1E26),
@@ -244,5 +245,5 @@ class AuthWrapperWithUserData extends StatelessWidget {
         ),
       ),
     );
-  }
-}
+  }*/
+} */

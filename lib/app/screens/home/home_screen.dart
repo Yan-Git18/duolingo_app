@@ -1,3 +1,4 @@
+import 'package:duolingo_app/app/screens/lessons/unit_1/saludos_screen.dart';
 import 'package:duolingo_app/app/services/unidades_services.dart';
 import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final authService = AuthService();
       final userId = authService.currentUser?.uid ?? '';
-      
+
       final unidades = await UnidadesService.obtenerUnidadesConProgreso(userId);
       final estadisticas = UnidadesService.obtenerEstadisticas(unidades);
 
@@ -53,9 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _completarLeccion(String leccionId) async {
     final authService = AuthService();
     final userId = authService.currentUser?.uid ?? '';
-    
+
     final exito = await UnidadesService.completarLeccion(userId, leccionId);
-    
+
     if (exito) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -89,7 +90,10 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_estadisticas != null)
               Text(
                 "${_estadisticas!['leccionesCompletadas']} de ${_estadisticas!['totalLecciones']} lecciones completadas",
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
           ],
         ),
@@ -200,8 +204,13 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _cargarUnidades,
-              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-              child: const Text('Reintentar', style: TextStyle(color: AppColors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+              ),
+              child: const Text(
+                'Reintentar',
+                style: TextStyle(color: AppColors.white),
+              ),
             ),
           ],
         ),
@@ -233,7 +242,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemBuilder: (context, index) {
           final unidad = _unidades[index];
           final estaDisponible = unidad.isAvailable(_unidades);
-          
+
           return Container(
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
@@ -257,13 +266,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: estaDisponible ? [
-                      unidad.colorSecundario,
-                      unidad.colorSecundario.withValues(alpha: 0.7),
-                    ] : [
-                      Colors.grey[300]!,
-                      Colors.grey[200]!,
-                    ],
+                    colors: estaDisponible
+                        ? [
+                            unidad.colorSecundario,
+                            unidad.colorSecundario.withValues(alpha: 0.7),
+                          ]
+                        : [Colors.grey[300]!, Colors.grey[200]!],
                   ),
                 ),
                 child: ExpansionTile(
@@ -277,14 +285,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   leading: Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: estaDisponible 
-                        ? unidad.colorPrimario.withValues(alpha: 0.2)
-                        : Colors.grey.withValues(alpha: 0.2),
+                      color: estaDisponible
+                          ? unidad.colorPrimario.withValues(alpha: 0.2)
+                          : Colors.grey.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
                       estaDisponible ? unidad.icono : Icons.lock,
-                      color: estaDisponible ? unidad.colorPrimario : Colors.grey,
+                      color: estaDisponible
+                          ? unidad.colorPrimario
+                          : Colors.grey,
                       size: 28,
                     ),
                   ),
@@ -296,12 +306,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
-                          color: estaDisponible ? unidad.colorPrimario : Colors.grey[600],
+                          color: estaDisponible
+                              ? unidad.colorPrimario
+                              : Colors.grey[600],
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        estaDisponible ? unidad.descripcion : "Completa la unidad anterior para desbloquear",
+                        estaDisponible
+                            ? unidad.descripcion
+                            : "Completa la unidad anterior para desbloquear",
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[600],
@@ -331,146 +345,173 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 4),
                         Text(
                           "${unidad.porcentajeProgreso}% completado",
-                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ],
                     ],
                   ),
-                  iconColor: estaDisponible ? unidad.colorPrimario : Colors.grey,
-                  collapsedIconColor: estaDisponible ? unidad.colorPrimario : Colors.grey,
-                  children: estaDisponible ? unidad.lecciones.asMap().entries.map((entry) {
-                    final leccion = entry.value;
-                    final esUltima = entry.key == unidad.lecciones.length - 1;
-                    final leccionDisponible = UnidadesService.esLeccionDisponible(leccion, _unidades);
+                  iconColor: estaDisponible
+                      ? unidad.colorPrimario
+                      : Colors.grey,
+                  collapsedIconColor: estaDisponible
+                      ? unidad.colorPrimario
+                      : Colors.grey,
+                  children: estaDisponible
+                      ? unidad.lecciones.asMap().entries.map((entry) {
+                          final leccion = entry.value;
+                          final esUltima =
+                              entry.key == unidad.lecciones.length - 1;
+                          final leccionDisponible =
+                              UnidadesService.esLeccionDisponible(
+                                leccion,
+                                _unidades,
+                              );
 
-                    return Container(
-                      margin: EdgeInsets.only(bottom: esUltima ? 0 : 12),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: leccionDisponible && !leccion.completada
-                            ? () => _mostrarDialogoLeccion(leccion)
-                            : null,
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: leccion.completada 
-                                  ? unidad.colorPrimario.withValues(alpha: 0.3)
-                                  : leccionDisponible 
-                                    ? Colors.grey[300]!
-                                    : Colors.grey[200]!,
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
+                          return Container(
+                            margin: EdgeInsets.only(bottom: esUltima ? 0 : 12),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: leccionDisponible && !leccion.completada
+                                    ? () => _mostrarDialogoLeccion(leccion)
+                                    : null,
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.all(16),
                                   decoration: BoxDecoration(
-                                    color: leccion.completada
-                                        ? unidad.colorPrimario.withValues(alpha: 0.1)
-                                        : leccionDisponible 
-                                          ? Colors.grey[100]
-                                          : Colors.grey[50],
-                                    borderRadius: BorderRadius.circular(8),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: leccion.completada
+                                          ? unidad.colorPrimario.withValues(
+                                              alpha: 0.3,
+                                            )
+                                          : leccionDisponible
+                                          ? Colors.grey[300]!
+                                          : Colors.grey[200]!,
+                                      width: 1.5,
+                                    ),
                                   ),
-                                  child: Icon(
-                                    leccion.completada 
-                                      ? leccion.icono
-                                      : leccionDisponible 
-                                        ? leccion.icono
-                                        : Icons.lock,
-                                    color: leccion.completada
-                                        ? unidad.colorPrimario
-                                        : leccionDisponible 
-                                          ? Colors.grey[400]
-                                          : Colors.grey[300],
-                                    size: 20,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                  child: Row(
                                     children: [
-                                      Text(
-                                        leccion.titulo,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: leccion.completada
+                                              ? unidad.colorPrimario.withValues(
+                                                  alpha: 0.1,
+                                                )
+                                              : leccionDisponible
+                                              ? Colors.grey[100]
+                                              : Colors.grey[50],
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          leccion.completada
+                                              ? leccion.icono
+                                              : leccionDisponible
+                                              ? leccion.icono
+                                              : Icons.lock,
                                           color: leccion.completada
                                               ? unidad.colorPrimario
-                                              : leccionDisponible 
-                                                ? Colors.grey[700]
-                                                : Colors.grey[400],
+                                              : leccionDisponible
+                                              ? Colors.grey[400]
+                                              : Colors.grey[300],
+                                          size: 20,
                                         ),
                                       ),
-                                      if (leccion.descripcion != null)
-                                        Text(
-                                          leccion.descripcion!,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[500],
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              leccion.titulo,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: leccion.completada
+                                                    ? unidad.colorPrimario
+                                                    : leccionDisponible
+                                                    ? Colors.grey[700]
+                                                    : Colors.grey[400],
+                                              ),
+                                            ),
+                                            if (leccion.descripcion != null)
+                                              Text(
+                                                leccion.descripcion!,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (leccion.completada)
+                                        Container(
+                                          padding: const EdgeInsets.all(4),
+                                          decoration: BoxDecoration(
+                                            color: unidad.colorPrimario,
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                            size: 16,
+                                          ),
+                                        )
+                                      else if (leccionDisponible)
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey[300]!,
+                                              width: 2,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.play_arrow,
+                                            color: Colors.grey,
+                                            size: 12,
+                                          ),
+                                        )
+                                      else
+                                        Container(
+                                          width: 24,
+                                          height: 24,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.lock,
+                                            color: Colors.grey,
+                                            size: 12,
                                           ),
                                         ),
                                     ],
                                   ),
                                 ),
-                                if (leccion.completada)
-                                  Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: unidad.colorPrimario,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Icon(
-                                      Icons.check,
-                                      color: Colors.white,
-                                      size: 16,
-                                    ),
-                                  )
-                                else if (leccionDisponible)
-                                  Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.grey[300]!,
-                                        width: 2,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Icon(
-                                      Icons.play_arrow,
-                                      color: Colors.grey,
-                                      size: 12,
-                                    ),
-                                  )
-                                else
-                                  Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Icon(
-                                      Icons.lock,
-                                      color: Colors.grey,
-                                      size: 12,
-                                    ),
-                                  ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList() : [],
+                          );
+                        }).toList()
+                      : [],
                 ),
               ),
             ),
@@ -485,15 +526,20 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Row(
             children: [
-              Icon(leccion.icono, color: const Color(0xFF58CC02)),
+              Icon(leccion.icono, color: AppColors.primary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   leccion.titulo,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],
@@ -525,12 +571,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                _iniciarLeccion(leccion);
+                //Navigator.of(context).pop();
+                //_iniciarLeccion(leccion);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LeccionSaludosScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF58CC02),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               child: const Text(
                 'Comenzar',

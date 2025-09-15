@@ -1,4 +1,5 @@
 import 'package:duolingo_app/app/services/auth_service.dart';
+import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   if (mounted) {
     if (result.success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message), backgroundColor: Color(0xFF58CC02)),
+        SnackBar(content: Text(result.message), backgroundColor: AppColors.primary),
       );
       Navigator.pushReplacementNamed(context, '/home');
     } else {
@@ -54,7 +55,7 @@ Future<void> _resetPassword() async {
   
   if (email.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ingresa tu correo'), backgroundColor: Colors.orange),
+      const SnackBar(content: Text('Ingresa tu correo'), backgroundColor: AppColors.orange),
     );
     return;
   }
@@ -66,7 +67,7 @@ Future<void> _resetPassword() async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(result.message),
-        backgroundColor: result.success ? Color(0xFF58CC02) : Colors.red,
+        backgroundColor: result.success ? AppColors.primary : Colors.red,
       ),
     );
   }
@@ -84,7 +85,7 @@ Future<void> _resetPassword() async {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Iniciar Sesión"),
-        backgroundColor: const Color(0xFF1C1E26),
+        backgroundColor: AppColors.background,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -103,7 +104,7 @@ Future<void> _resetPassword() async {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.email_outlined),
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppColors.white),
                 validator: (correo) {
                   if (correo == null || correo.isEmpty) {
                     return "Ingrese un correo";
@@ -128,7 +129,7 @@ Future<void> _resetPassword() async {
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.lock_outline),
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppColors.white),
                 validator: (contrasena) {
                   if (contrasena == null || contrasena.isEmpty) {
                     return "Ingrese una contraseña";
@@ -145,7 +146,7 @@ Future<void> _resetPassword() async {
                   child: const Text(
                     "¿Olvidaste tu contraseña?",
                     style: TextStyle(
-                      color: Color(0xFF58CC02),
+                      color: AppColors.primary,
                       fontSize: 14,
                     ),
                   ),
@@ -159,7 +160,7 @@ Future<void> _resetPassword() async {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF58CC02),
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -171,7 +172,7 @@ Future<void> _resetPassword() async {
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: AppColors.white,
                             strokeWidth: 2,
                           ),
                         )
@@ -179,7 +180,7 @@ Future<void> _resetPassword() async {
                           "Iniciar Sesión",
                           style: TextStyle(
                             fontSize: 18,
-                            color: Colors.white,
+                            color: AppColors.white,
                           ),
                         ),
                 ),
@@ -202,7 +203,7 @@ Future<void> _resetPassword() async {
                     child: const Text(
                       "Regístrate",
                       style: TextStyle(
-                        color: Color(0xFF58CC02),
+                        color: AppColors.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

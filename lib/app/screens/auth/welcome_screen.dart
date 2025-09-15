@@ -11,11 +11,8 @@ class WelcomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [            
-            const SizedBox(height: 150),
-            Image.asset(
-              'images/duo.png',
-              height: 150,
-            ),
+            const SizedBox(height: 200),
+            AppImages.logo,
             const SizedBox(height: 20),
             
             const Text(
@@ -35,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 16, color: Colors.white70),
             ),
 
-            const SizedBox(height: 150),
+            const SizedBox(height: 250),
 
             // Botón de registrarse
             ElevatedButton(
@@ -51,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
               },
               child: const Text(
                 "REGÍSTRATE",
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: AppColors.white),
               ),
             ),
 

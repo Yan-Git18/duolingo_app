@@ -9,6 +9,11 @@ class AppColors {
 }
 
 class AppStrings {
-  static const String appName = "Duolingo Clone";
+  static const String appName = "Learnify";
   static const String welcome = "La forma divertida, efectiva y\n gratis de aprender idiomas!";
+}
+
+class AppImages {
+  static Image logo = Image.asset('images/Logo-learnify.png', height: 150);
+  static Image celebracion = Image.asset('images/celebracion.png', height: 200);
 }

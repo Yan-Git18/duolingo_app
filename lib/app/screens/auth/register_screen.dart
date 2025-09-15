@@ -1,4 +1,5 @@
 import 'package:duolingo_app/app/services/auth_service.dart';
+import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -16,44 +17,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   // Función para registrar usuario con Firebase
   Future<void> _registerUser() async {
-  if (!_validations.currentState!.validate()) return;
+    if (!_validations.currentState!.validate()) return;
 
-  setState(() {
-    _isLoading = true;
-  });
+    setState(() {
+      _isLoading = true;
+    });
 
-  final authService = AuthService();
-  
-  final result = await authService.registerUser(
-    nombre: _nameController.text,
-    apellidos: _lastNameController.text,
-    edad: int.parse(_ageController.text),
-    email: _emailController.text,
-    password: _passwordController.text,
-  );
+    final authService = AuthService();
 
-  if (mounted) {
-    if (result.success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message), backgroundColor: Color(0xFF58CC02)),
-      );
-      Navigator.pushReplacementNamed(context, '/home');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result.message), backgroundColor: Colors.red),
-      );
+    final result = await authService.registerUser(
+      nombre: _nameController.text,
+      apellidos: _lastNameController.text,
+      edad: int.parse(_ageController.text),
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
+    if (mounted) {
+      if (result.success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(result.message),
+            backgroundColor: AppColors.primary,
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result.message), backgroundColor: Colors.red),
+        );
+      }
     }
-  }
 
-  setState(() {
-    _isLoading = false;
-  });
-}
+    setState(() {
+      _isLoading = false;
+    });
+  }
 
   @override
   void dispose() {
@@ -70,7 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Regístrate"),
-        backgroundColor: const Color(0xFF1C1E26),
+        backgroundColor: AppColors.background,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -86,7 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   labelText: "Nombre",
                   border: OutlineInputBorder(),
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (nombres) {
                   if (nombres == null || nombres.isEmpty) {
                     return "Ingrese su nombre";
@@ -103,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   labelText: "Apellidos",
                   border: OutlineInputBorder(),
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (apellidos) {
                   if (apellidos == null || apellidos.isEmpty) {
                     return "Ingrese sus apellidos";
@@ -121,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   labelText: "Edad",
                   border: OutlineInputBorder(),
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (edad) {
                   if (edad == null || edad.isEmpty) {
                     return "Ingrese su edad";
@@ -143,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   labelText: "Correo",
                   border: OutlineInputBorder(),
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (correo) {
                   if (correo == null || correo.isEmpty) {
                     return "Ingrese un correo";
@@ -168,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   border: OutlineInputBorder(),
                   helperText: "Mínimo 6 caracteres",
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (contrasena) {
                   if (contrasena == null || contrasena.isEmpty) {
                     return "Ingrese una contraseña";
@@ -190,9 +194,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   border: OutlineInputBorder(),
                   helperText: "Debe coincidir con la contraseña anterior",
                 ),
-                style: const TextStyle(color: Color(0xffffffff)),
+                style: const TextStyle(color: AppColors.white),
                 validator: (confirmarContrasena) {
-                  if (confirmarContrasena == null || confirmarContrasena.isEmpty) {
+                  if (confirmarContrasena == null ||
+                      confirmarContrasena.isEmpty) {
                     return "Confirme su contraseña";
                   }
                   if (confirmarContrasena != _passwordController.text) {
@@ -208,7 +213,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF58CC02),
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
@@ -220,13 +225,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
-                            color: Colors.white,
+                            color: AppColors.white,
                             strokeWidth: 2,
                           ),
                         )
                       : const Text(
                           "Registrarse",
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppColors.white,
+                          ),
                         ),
                 ),
               ),

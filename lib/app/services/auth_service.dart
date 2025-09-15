@@ -1,3 +1,4 @@
+import 'package:duolingo_app/app/utils/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -21,15 +22,17 @@ class AuthService {
     required int edad,
     required String email,
     required String password,
+
   }) async {
+
     try {
-      // 1. Crear usuario en Firebase Auth
+      // Crear usuario en Firebase
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
 
-      // 2. Guardar datos adicionales en Firestore
+      // Guardar datos adicionales en Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'nombre': nombre.trim(),
         'apellidos': apellidos.trim(),
@@ -43,12 +46,12 @@ class AuthService {
         'unidadActual': 1,
       });
 
-      // 3. Actualizar displayName
-      await userCredential.user!.updateDisplayName('$nombre $apellidos');
+      // Actualizar displayName
+      await userCredential.user!.updateDisplayName(nombre);
 
       return AuthResult.success(
         user: userCredential.user!,
-        message: '¡Registro exitoso! Bienvenido a Duolingo',
+        message: '¡Registro exitoso! Bienvenido a ${AppStrings.appName}',
       );
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_getAuthErrorMessage(e.code));
@@ -57,10 +60,11 @@ class AuthService {
     }
   }
 
-  /// Iniciar sesión
+  // Iniciar sesión
   Future<AuthResult> loginUser({
     required String email,
     required String password,
+
   }) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -81,7 +85,7 @@ class AuthService {
     }
   }
 
-  /// Cerrar sesión
+  // Cerrar sesión
   Future<AuthResult> signOut() async {
     try {
       await _auth.signOut();
@@ -91,13 +95,14 @@ class AuthService {
     }
   }
 
-  /// Restablecer contraseña
+  // Restablecer contraseña
   Future<AuthResult> resetPassword({required String email}) async {
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
       return AuthResult.success(
         message: 'Se ha enviado un enlace de recuperación a tu correo',
       );
+
     } on FirebaseAuthException catch (e) {
       String errorMessage = e.code == 'user-not-found'
           ? 'No existe una cuenta con este correo'
@@ -108,7 +113,7 @@ class AuthService {
     }
   }
 
-  /// Obtener datos del usuario desde Firestore
+  // Obtener datos del usuario desde Firestore
   Future<Map<String, dynamic>?> getUserData() async {
     try {
       if (currentUser == null) return null;
@@ -119,13 +124,13 @@ class AuthService {
           .get();
       
       return doc.exists ? doc.data() as Map<String, dynamic> : null;
-    } catch (e) {
-      print('Error al obtener datos del usuario: $e');
+
+    } catch (e) {      
       return null;
     }
   }
 
-  /// Actualizar datos del usuario
+  // Actualizar datos del usuario
   Future<bool> updateUserData(Map<String, dynamic> data) async {
     try {
       if (currentUser == null) return false;
@@ -136,13 +141,13 @@ class AuthService {
           .update(data);
       
       return true;
+
     } catch (e) {
-      print('Error al actualizar datos del usuario: $e');
       return false;
     }
   }
 
-  /// Eliminar cuenta de usuario
+  // Eliminar cuenta de usuario
   Future<AuthResult> deleteAccount() async {
     try {
       if (currentUser == null) {
@@ -156,17 +161,19 @@ class AuthService {
       await currentUser!.delete();
       
       return AuthResult.success(message: 'Cuenta eliminada correctamente');
+
     } on FirebaseAuthException catch (e) {
       return AuthResult.error(_getAuthErrorMessage(e.code));
+
     } catch (e) {
       return AuthResult.error('Error al eliminar cuenta: $e');
     }
   }
 
-  /// Verificar si el email está verificado
+  // Verificar si el email está verificado
   bool get isEmailVerified => currentUser?.emailVerified ?? false;
 
-  /// Enviar verificación de email
+  // Enviar verificación de email
   Future<AuthResult> sendEmailVerification() async {
     try {
       if (currentUser == null) {
@@ -182,7 +189,7 @@ class AuthService {
     }
   }
 
-  /// Convertir códigos de error de Firebase a mensajes legibles
+  // Convertir códigos de error de Firebase a mensajes legibles
   String _getAuthErrorMessage(String code) {
     switch (code) {
       case 'weak-password':
@@ -209,7 +216,7 @@ class AuthService {
   }
 }
 
-/// Clase para manejar resultados de operaciones de autenticación
+// Clase para manejar resultados de operaciones de autenticación
 class AuthResult {
   final bool success;
   final String message;
